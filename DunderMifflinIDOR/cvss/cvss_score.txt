@@ -1,0 +1,2 @@
+CVSS v3.1 Vector: AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:L
+Score: 8.2 (High)

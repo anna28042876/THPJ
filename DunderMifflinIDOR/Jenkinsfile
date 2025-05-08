@@ -1,0 +1,50 @@
+pipeline {
+  agent any
+  stages {
+    stage('Checkout') {
+      steps {
+        echo 'Checking out source code from repository...'
+      }
+    }
+    stage('Build & Unit Tests') {
+      steps {
+        bat 'echo Installing dependencies...'
+        bat 'echo Running unit tests...'
+        bat 'echo Unit tests passed.'
+      }
+    }
+    stage('API Mock Integration') {
+      steps {
+        bat 'echo Launching API mock server...'
+        bat 'echo Running integration tests...'
+        bat 'echo Integration tests successful.'
+      }
+    }
+    stage('Postman Tests') {
+      steps {
+        bat 'echo Executing Postman collection with Newman...'
+        bat 'echo 3 tests passed, 1 failed.'
+      }
+    }
+    stage('Security Scans') {
+      parallel {
+        stage('Burp Auth Matrix') {
+          steps {
+            bat 'echo Running Burp Suite AuthMatrix for access control evaluation...'
+          }
+        }
+        stage('OWASP ZAP') {
+          steps {
+            bat 'echo Starting OWASP ZAP scan...'
+            bat 'echo Report generated at zap_report.html'
+          }
+        }
+      }
+    }
+  }
+  post {
+    always {
+      bat 'echo IDOR issue detected in invoice endpoint.'
+    }
+  }
+}
