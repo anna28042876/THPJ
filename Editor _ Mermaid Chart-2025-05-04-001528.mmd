@@ -1,0 +1,183 @@
+---
+config:
+  layout: fixed
+---
+flowchart TD
+ subgraph Detection["Detection"]
+    direction TB
+        D1["Security Scanner Initiates Scan - Nessus/ZAP\n_Entities: Invoice Management Platform_"]
+        D2["Identify Potential Vulnerabilities\n_Entities: Vulnerability Management Analyst_"]
+        D2a["Ingest Triage Artefacts: HTTP Req/Res, Tokens, Headers, Asset Notes\n_Entities: Invoice Management Platform_"]
+        D2b["Populate CVSS v3.1 Base Metrics\n_Entities: Vulnerability Management Analyst_"]
+        D2c["Ingest Automated Scanner Outputs - ZAP, Burp\n_Entities: Vulnerability Management Analyst_"]
+        D3["Generate CVSS Score (e.g., 8.2 High)\n_Entities: Vulnerability Management Analyst_"]
+        D3b["Map to OWASP A01 - Broken Access Control\n_Entities: Vulnerability Management Analyst, Security Architect, Product Owner_"]
+        D4["Calculate Business Risk via 5×5 Matrix\n_Entities: Vulnerability Management Analyst, Product Owner_"]
+        D4a["Consequence: Catastrophic; Likelihood: Almost Certain\n_Entities: Vulnerability Management Analyst_"]
+        D4b["Assign Risk Rating: Extreme (25)\n_Entities: Vulnerability Management Analyst_"]
+        D5["Generate Executive Summary and Risk Justification\n_Entities: Vulnerability Management Analyst, Security Architect, Product Owner_"]
+        D6["Log Detection Event with Digital Signatures\n_Entities: Vulnerability Management Analyst, Product Owner_"]
+        D7["Send Webhook Notification - Triage Complete\n_Entities: Invoice Management Platform_"]
+        D8["Store Raw Scan Data - Replay PoC, curl, Postman\n_Entities: Vulnerability Management Platform_"]
+  end
+ subgraph ThreatIntel["ThreatIntel"]
+    direction TB
+        TI1["Extract Vuln ID: IDOR-2025-001-DMI\n_Entities: SOC Analyst_"]
+        TI2["Ingest Feeds: MISP, CIRCL, RecordedFuture, Falcon X\n_Entities: Threat-Intel Connectors_"]
+        TI3["Correlate with ExploitDB, Reddit, GitHub\n_Entities: Correlation Engine (System), CTI Analyst_"]
+        TI4["Assign Confidence: High / Medium / Low\n_Entities: CTI Analyst_"]
+        TI5["Adjust Risk Matrix Likelihood\n_Entities: SOC Analyst, CTI Analyst_"]
+        TI6["Log TI Events with Source and Timestamp\n_Entities: Vulnerability Management Platform_"]
+        TI7["Update CVSS/Risk Matrix and Re-trigger Triage\n_Entities: CTI Analyst, SOC Analyst_"]
+        TI8["30-Day Continuous Watchlist\n_Entities: Threat-Intel Connectors, Vulnerability Management Platform_"]
+  end
+ subgraph Triage["Triage"]
+    direction TB
+        T1["Receive Webhook Payload with Artefacts\n_Entities: Vulnerability Management Platform_"]
+        T2["Parse Vuln Metadata: CVSS, PoC, Screenshots\n_Entities: Vulnerability Management Analyst_"]
+        T2b["Enrich via STIX/TAXII Feeds\n_Entities: Threat-Intel Connectors, SOC Analyst_"]
+        T3["Review Logs, Asset Tags, Data Classifications\n_Entities: Vulnerability Management Analyst_"]
+        T4["Assess Business Impact: GDPR, PCI, PII\n_Entities: Vulnerability Management Analyst, Compliance Leads_"]
+        T4b["Risk Matrix Re-Evaluation (if needed)\n_Entities: Vulnerability Management Analyst, Product Owner_"]
+        T4c["Check OWASP Category and SLA Policy\n_Entities: Security Architect, Product Owner_"]
+        T5["Assign Severity and Priority: P0\n_Entities: Vulnerability Management Analyst_"]
+        T6["Forward to Service Desk Automation\n_Entities: Vulnerability Management Platform_"]
+  end
+ subgraph Ticketing["Ticketing"]
+    direction TB
+        TK0["Auto-Create Ticket in ServiceNow\n_Entities: ServiceNow API, Vulnerability Management Platform_"]
+        TK1["Populate Fields: CVSS, OWASP, Risk, Artefacts\n_Entities: ServiceNow API, Vulnerability Management Platform_"]
+        TK1b["Trigger SLA Countdown - 48h\n_Entities: ServiceNow API_"]
+        TK1c["Send Acknowledgement Email to Dev Team\n_Entities: ServiceNow API, Application Development Team_"]
+        TK2["Assign Security Champion and Watchers\n_Entities: Application Development Team, Security Champion, Watchers_"]
+        TK3["Start Escalation Timer - 4h Idle → Pager\n_Entities: AppSec Lead, ServiceNow API_"]
+        TK4["Log Ticket Creation and Audit Trail\n_Entities: Vulnerability Management Platform_"]
+        TK5["Day 1 AM: Remediation Readiness Check\n_Entities: Security Champion, Application Development Team_"]
+        TK6["Day 1 PM: Sprint Blocker Escalation\n_Entities: Security Champion_"]
+        TK7["Day 2 AM: Past Due Alert to CISO and CTO\n_Entities: ServiceNow API, CISO, CTO_"]
+  end
+ subgraph Remediation["Remediation"]
+    direction TB
+        R1["Developer Reviews Ticket and Artefacts\n_Entities: Application Development Team_"]
+        R2["Reproduce PoC via curl, Postman, Logs\n_Entities: Application Development Team_"]
+        R2b["Verify Across QA and Pre-prod Environments\n_Entities: QA Analysts, Application Development Team_"]
+        R3["Implement Fix: Add ABAC Policy Engine\n_Entities: Backend Developers, Security Policy Writers_"]
+        R3a["Define Attributes: User, Resource, Env\n_Entities: Security Policy Writers_"]
+        R3b["Design Policy Rules, Integrate OPA\n_Entities: Application Security Architects, DevOps_"]
+        R3c["Enforce ACL + Regression Tests in CI\n_Entities: CI/CD Integration Engineers, QA Analysts_"]
+        R4["Peer Code Review and Approval\n_Entities: Application Development Team_"]
+        R5["Merge Fix to Main Branch\n_Entities: Application Development Team, DevOps_"]
+        R6["CI/CD Pipeline Triggers ZAP + AuthMatrix\n_Entities: DevOps (Jenkins), AppSec Engineers_"]
+        R7["Deploy to Staging\n_Entities: DevOps_"]
+        R8["Run QA Automated and Manual Testing\n_Entities: QA Analysts_"]
+        R9["Deploy to Production\n_Entities: DevOps_"]
+        R10["Close Ticket and Log Final State\n_Entities: Application Development Team, ServiceNow API_"]
+  end
+ subgraph Monitoring["Monitoring"]
+    direction TB
+        M1["Continuous Scanning in CI (ZAP, Burp)\n_Entities: AppSec Engineers, DevOps (Jenkins)_"]
+        M2["Regression Monitoring via Jenkins Jobs\n_Entities: DevOps (Jenkins)_"]
+        M3["Log MTTR and SLA Breach Metrics\n_Entities: ITSM Dashboard_"]
+        M4["Generate Weekly Executive Reports\n_Entities: Leadership_"]
+        M5["Feed Retrospective Learnings Back to Detection\n_Entities: Vulnerability Management Team, QA, Retrospective Participants_"]
+  end
+ subgraph BusinessLegal["BusinessLegal"]
+    direction TB
+        BL1["Analyze Data at Risk: Names, Billing, PII\n_Entities: Business Risk Team_"]
+        BL2["Estimate Volume: 15K Invoices, 30K Accounts\n_Entities: Business Risk Team_"]
+        BL3["Check GDPR Article 32, PCI DSS 3.2\n_Entities: Compliance Leads_"]
+        BL4["Model Financial Risk: Fines, Litigation, PR\n_Entities: Legal Team, Finance Team_"]
+        BL5["Prepare Regulatory Notifications (72h)\n_Entities: Compliance Leads, Legal Team_"]
+        BL6["Classify Legal and Reputational Risk\n_Entities: Business Risk Team, Product Owners_"]
+  end
+ subgraph ThreatAnalysis["ThreatAnalysis"]
+    direction TB
+        TA1["Public PoCs Found: GitHub, Blogs\n_Entities: Security Researchers_"]
+        TA2["Ease of Modification: Endpoint, Token\n_Entities: Security Researchers_"]
+        TA3["ZAP Forced Browse Confirms IDOR\n_Entities: AppSec Engineers_"]
+        TA4["Burp AuthMatrix Detects Cross-Account Access\n_Entities: AppSec Engineers_"]
+        TA5["Jenkins Regression Jobs Auto-Fail on Recurrence\n_Entities: DevOps (Jenkins)_"]
+  end
+ subgraph Feedback["Feedback"]
+    direction TB
+        F1["Post-Mortem: Detection, Fix Accuracy\n_Entities: Retrospective Participants_"]
+        F2["Update Scanning Rules: ZAP, Burp\n_Entities: Vulnerability Management Team, AppSec Engineers_"]
+        F3["Improve Webhook Payloads and Enrichment\n_Entities: Vulnerability Management Team_"]
+        F4["Adjust SLA Based on MTTR Trends\n_Entities: Leadership, Vulnerability Management Team_"]
+        F5["Incorporate Lessons into SOPs\n_Entities: Vulnerability Management Team, QA_"]
+  end
+    D1 --> D2
+    D2 --> D2a
+    D2a --> D2b
+    D2b --> D2c
+    D2c --> D3
+    D3 --> D3b
+    D3b --> D4
+    D4 --> D4a
+    D4a --> D4b
+    D4b --> D5
+    D5 --> D6
+    D6 --> D7
+    D7 --> D8
+    TI1 --> TI2
+    TI2 --> TI3
+    TI3 --> TI4
+    TI4 --> TI5
+    TI5 --> TI6
+    TI6 --> TI7
+    TI7 --> TI8 & T4 & T1
+    T1 --> T2
+    T2 --> T2b
+    T2b --> T3
+    T3 --> T4
+    T4 --> T4b
+    T4b --> T4c
+    T4c --> T5
+    T5 --> T6
+    TK0 --> TK1
+    TK1 --> TK1b
+    TK1b --> TK1c
+    TK1c --> TK2
+    TK2 --> TK3
+    TK3 --> TK4
+    TK4 --> TK5
+    TK5 --> TK6
+    TK6 --> TK7
+    R1 --> R2
+    R2 --> R2b
+    R2b --> R3
+    R3 --> R3a
+    R3a --> R3b
+    R3b --> R3c
+    R3c --> R4
+    R4 --> R5
+    R5 --> R6
+    R6 --> R7
+    R7 --> R8
+    R8 --> R9
+    R9 --> R10
+    M1 --> M2
+    M2 --> M3
+    M3 --> M4
+    M4 --> M5
+    BL1 --> BL2
+    BL2 --> BL3
+    BL3 --> BL4
+    BL4 --> BL5
+    BL5 --> BL6
+    TA1 --> TA2
+    TA2 --> TA3
+    TA3 --> TA4
+    TA4 --> TA5
+    F1 --> F2
+    F2 --> F3
+    F3 --> F4
+    F4 --> F5 & TK1b
+    D8 --> T1
+    T6 --> TK0
+    TK7 --> R1
+    R10 --> M1 & F1
+    M5 --> D1
+    BL6 --> D4 & T4b
+    TA5 --> D2c & T4
+    F5 --> D1 & T2
